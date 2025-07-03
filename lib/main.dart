@@ -11,7 +11,8 @@ void main() {
 void setDebugs() {
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = stripePublishableKey;
-  
+  Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
+  Stripe.urlScheme = 'flutterstripe';
 }
 
 class MyApp extends StatelessWidget {

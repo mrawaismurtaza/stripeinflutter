@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 import 'package:stripeinflutter/conts.dart';
@@ -20,6 +21,7 @@ class Cardpay implements Pay{
       }
       await Stripe.instance.initPaymentSheet(paymentSheetParameters: SetupPaymentSheetParameters(
         paymentIntentClientSecret: paymentIntent['client_secret'],
+        style: ThemeMode.light,
         merchantDisplayName: 'Awais Co.',
       ));
       
@@ -58,7 +60,18 @@ class Cardpay implements Pay{
   Future<void> confirmPayment() async {
     try {
       await Stripe.instance.presentPaymentSheet();
+    } on StripeException catch (e) {
+      // Handle user cancellation gracefully
+      if (e.error.code == FailureCode.Canceled) {
+        throw Exception('Payment was cancelled by user');
+      }
+      throw Exception('Payment confirmation failed: ${e.error.message}');
     } catch (e) {
+      // Handle other types of errors
+      String errorMessage = e.toString();
+      if (errorMessage.contains('cancel') || errorMessage.contains('Cancel')) {
+        throw Exception('Payment was cancelled by user');
+      }
       throw Exception('Payment confirmation failed: $e');
     }
   }
