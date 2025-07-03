@@ -1,0 +1,10 @@
+import 'package:stripeinflutter/pay.dart';
+
+class Googlepay implements Pay{
+  @override
+  Future<void> pay(double amount, String currency) async {
+    // TODO: implement pay
+    throw UnimplementedError();
+  }
+  
+}
